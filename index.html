@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>WiFi QR Maker</title>
+</head><body>
+
+<script type="module" src="https://taisukef.github.io/qrcode-generator/es/qr-code.js"></script>
+<script type="module" src="https://code4fukui.github.io/qr-code-reader/qr-code-reader.js"></script>
+
+<h1>WiFi QR Maker</h1>
+<input id=inssid><br>
+<input id=inpass><br>
+<qr-code id=qr></qr-code>
+<div id=divqr></div>
+
+<qr-code-reader id=qrr></qr-code-reader><br>
+
+<footer>
+<a href=https://github.com/code4fukui/wifi-qr-maker>src on GitHub</a>
+</footer>
+
+<script type="module">
+
+class WiFiQR {
+  static encode(ssid, pass) {
+    return `WIFI:T:WPA;S:${ssid};P:${pass};;`;
+  }
+  static decode(wifi) {
+    const parse = (name) => {
+      const s = wifi;
+      const n = s.indexOf(name + ":");
+      if (n < 0) return "";
+      const m = s.indexOf(";", n + name.length + 1);
+      if (m < 0) return "";
+      return s.substring(n + name.length + 1, m);
+    };
+    const ssid = parse("S");
+    const pass = parse("P");
+    return { ssid, pass };
+  }
+};
+
+inssid.oninput = inpass.oninput = () => {
+  const wifi = WiFiQR.encode(inssid.value, inpass.value);  
+  divqr.textContent = wifi;
+  qr.value = wifi;
+};
+
+qrr.oninput = (s) => {
+  qrr.stop();
+  const wifi = s.data;
+  divqr.textContent = wifi;
+  qr.value = wifi;
+  const { ssid, pass } = WiFiQR.decode(wifi);
+  inssid.value = ssid;
+  inpass.value = pass;  
+};
+
+</script>
+
+<style>
+body {
+  font-family: sans-serif;
+  text-align: center;
+}
+a {
+  color: gray !important;
+}
+</style>
+
+</body></html>
