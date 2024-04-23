@@ -8,7 +8,7 @@
 <h1>WiFi QR Maker</h1>
 <input id=inssid><br>
 <input id=inpass><br>
-<qr-code id=qr></qr-code>
+<qr-code id=qr dotsize=40></qr-code>
 <div id=divqr></div>
 
 <qr-code-reader id=qrr></qr-code-reader><br>
@@ -65,6 +65,9 @@ input {
 }
 a {
   color: gray !important;
+}
+qr-code canvas {
+  zoom: 10%;
 }
 </style>
 </body></html>
