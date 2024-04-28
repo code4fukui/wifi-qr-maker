@@ -18,30 +18,13 @@
 </footer>
 
 <script type="module">
-
-class WiFiQR {
-  static encode(ssid, pass) {
-    return `WIFI:T:WPA;S:${ssid};P:${pass};;`;
-  }
-  static decode(wifi) {
-    const parse = (name) => {
-      const s = wifi;
-      const n = s.indexOf(name + ":");
-      if (n < 0) return "";
-      const m = s.indexOf(";", n + name.length + 1);
-      if (m < 0) return "";
-      return s.substring(n + name.length + 1, m);
-    };
-    const ssid = parse("S");
-    const pass = parse("P");
-    return { ssid, pass };
-  }
-};
+import { WiFiQR } from "./WiFiQR.js";
 
 inssid.oninput = inpass.oninput = () => {
   const wifi = WiFiQR.encode(inssid.value, inpass.value);  
   divqr.textContent = wifi;
   qr.value = wifi;
+  location.hash = "#" + inssid.value + "," + inpass.value;
 };
 
 qrr.oninput = (s) => {
@@ -53,6 +36,14 @@ qrr.oninput = (s) => {
   inssid.value = ssid;
   inpass.value = pass;  
 };
+
+const sp = location.hash.substring(1).split(",");
+if (sp[0]) {
+  inssid.value = sp[0];
+  inpass.value = sp[1];
+  inssid.oninput();
+}
+
 </script>
 
 <style>
